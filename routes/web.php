@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Livewire\ArticleForm;
+use App\Http\Livewire\ArticleIsma;
+use App\Http\Livewire\Articles;
+use App\Http\Livewire\ArticleShow;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +17,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+Route::get('/', Articles::class)->name('articles.index');; //home
+Route::get('/create', ArticleForm::class)->name('articles.create'); //ruta de crear articulo
+Route::get('/blog/{article}', ArticleShow::class)->name('articles.show'); //ruta de ver articulo
+Route::get('/blog/{article}/edit', ArticleForm::class)->name('articles.edit'); //ruta de ver articulo
