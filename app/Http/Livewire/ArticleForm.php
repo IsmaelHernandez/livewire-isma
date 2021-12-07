@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Models\Article;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 //componente que nos dej crear y editar un articulo
 class ArticleForm extends Component
@@ -17,7 +18,8 @@ class ArticleForm extends Component
         return [
             'article.title' => ['required', 'min:4'],
             'article.slug' => [
-                'required', 
+                'required',
+                'alpha_dash', //solo permitira letras-numeros-guiones
                 Rule::unique('articles', 'slug')->ignore($this->article)
             ],
             'article.content' => ['required'],
@@ -35,6 +37,11 @@ class ArticleForm extends Component
         $this->validateOnly($propertyName);
     }
 
+    //otro hook verificar cada ves que se actualize
+    public function updatedArticleTitle($title)
+    {
+        $this->article->slug = Str::slug($title);
+    }
     // hace una funcion para insertar registro en bd
     public function save ()
     {
