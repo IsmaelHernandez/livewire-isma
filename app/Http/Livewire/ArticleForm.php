@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Models\Article;
 
+//componente que nos dej crear y editar un articulo
 class ArticleForm extends Component
 {
     public Article $article;

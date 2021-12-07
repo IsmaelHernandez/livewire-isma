@@ -46,10 +46,10 @@ class ArticleFormTest extends TestCase
      function can_create_new_articles()
     {
         Livewire::test('article-form')
-            ->set('article.title', 'New article')
+            ->set('article.title', 'New article') //setear una propiedad
             ->set('article.content', 'Article content')
             ->call('save')
-            ->assertSessionHas('status')
+            ->assertSessionHas('status') //verificar si la seccion tiene status
             ->assertRedirect(route('articles.index'))
 
         ;
@@ -98,24 +98,19 @@ class ArticleFormTest extends TestCase
             ->set('article.content', 'Article content')
             ->call('save')
             ->assertHasErrors(['article.title' => 'required'])
-            ->assertSeeHtml(__('validation.required', ['attribute' => 'title']))
         ;
     }
 
       /** @test */
     //otro test para validar la rules
-    function title_must_be_4()
+    function title_must_be_4_characters_min()
     {
         Livewire::test('article-form')
             ->set('article.title', 'Art')
             ->set('article.content', 'Article content')
             ->call('save')
             ->assertHasErrors(['article.title' => 'min'])
-            ->assertSeeHtml(__('validation.min.string', [
-                'attribute' => 'title',
-                'min' => 4
-                
-            ]))
+            
         ;
     }
 
@@ -127,7 +122,20 @@ class ArticleFormTest extends TestCase
             ->set('article.title', 'New Article')
             ->call('save')
             ->assertHasErrors(['article.content' => 'required'])
-            ->assertSeeHtml(__('validation.required', ['attribute' => 'content']))
+        ;
+    }
+
+    /** @test */
+    //test para validar_en_tiempo_real_el_titulo
+    function real_time_validation_work()
+    {
+        Livewire::test('article-form')
+            ->set('article.title', '')
+            ->assertHasErrors(['article.title' => 'required'])
+            ->set('article.title', 'new')
+            ->assertHasErrors(['article.title' => 'min'])
+            ->set('article.title', 'New Article')
+            ->assertHasNoErrors('article.title')
         ;
     }
 
