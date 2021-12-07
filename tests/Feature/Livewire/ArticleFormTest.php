@@ -14,7 +14,6 @@ class ArticleFormTest extends TestCase
 
     //crear un test que nos diga que el componente se muestra correctamente
      /** @test */
-    //otro test para validar si el titulo es obligatorio
     function article_form_renders_properly()
     {
         $this->get(route('articles.create'))
@@ -73,7 +72,7 @@ class ArticleFormTest extends TestCase
         //inicializamos el componente
         Livewire::test('article-form', ['article' => $article])
             //metodo de livewire  para verificar que una propiedad ya esta setiada
-            ->assertSet('article.title', $article->title)
+            ->assertSet('article.title', $article->title) //para ver si una propiedad esta seteada
             ->assertSet('article.content', $article->content)  
             ->set('article.title', 'Updated title')  
             ->call('save')
@@ -86,7 +85,7 @@ class ArticleFormTest extends TestCase
         $this->assertDatabaseCount('articles', 1);
 
         $this->assertDatabaseHas('articles',[
-            'title' => 'Updated Title'
+            'title' => 'Updated title'
         ]);
     }
 
@@ -98,6 +97,7 @@ class ArticleFormTest extends TestCase
             ->set('article.content', 'Article content')
             ->call('save')
             ->assertHasErrors(['article.title' => 'required'])
+            ->assertSeeHtml(__('validation.required', ['attribute' => 'title']))
         ;
     }
 
@@ -110,7 +110,11 @@ class ArticleFormTest extends TestCase
             ->set('article.content', 'Article content')
             ->call('save')
             ->assertHasErrors(['article.title' => 'min'])
-            
+            ->assertSeeHtml(__('validation.min.string', [
+                'attribute' => 'title',
+                'min' => 4
+
+            ]))
         ;
     }
 
@@ -122,6 +126,7 @@ class ArticleFormTest extends TestCase
             ->set('article.title', 'New Article')
             ->call('save')
             ->assertHasErrors(['article.content' => 'required'])
+            ->assertSeeHtml(__('validation.required', ['attribute' => 'content']))
         ;
     }
 
