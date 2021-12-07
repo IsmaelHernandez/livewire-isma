@@ -32,6 +32,7 @@ class ArticleFormTest extends TestCase
         Livewire::test('article-form')
             ->assertSeeHtml('wire:submit.prevent="save"')
             ->assertSeeHtml('wire:model="article.title"')
+            ->assertSeeHtml('wire:model="article.slug"')
             ->assertSeeHtml('wire:model="article.content"')
         ;
     }
@@ -46,6 +47,7 @@ class ArticleFormTest extends TestCase
     {
         Livewire::test('article-form')
             ->set('article.title', 'New article') //setear una propiedad
+            ->set('article.slug', 'new-article')
             ->set('article.content', 'Article content')
             ->call('save')
             ->assertSessionHas('status') //verificar si la seccion tiene status
@@ -55,6 +57,7 @@ class ArticleFormTest extends TestCase
         //verificar si en la base de datos se creo el articulo
         $this->assertDatabaseHas('articles',[
             'title' => 'New article',
+            'slug' => 'new-article',
             'content' => 'Article content'
         ]);
     }
@@ -73,8 +76,10 @@ class ArticleFormTest extends TestCase
         Livewire::test('article-form', ['article' => $article])
             //metodo de livewire  para verificar que una propiedad ya esta setiada
             ->assertSet('article.title', $article->title) //para ver si una propiedad esta seteada
+            ->assertSet('article.slug', $article->slug)
             ->assertSet('article.content', $article->content)  
-            ->set('article.title', 'Updated title')  
+            ->set('article.title', 'Updated title')
+            ->set('article.slug', 'updated-slug')   
             ->call('save')
             ->assertSessionHas('status')
             ->assertRedirect(route('articles.index'))
@@ -85,7 +90,8 @@ class ArticleFormTest extends TestCase
         $this->assertDatabaseCount('articles', 1);
 
         $this->assertDatabaseHas('articles',[
-            'title' => 'Updated title'
+            'title' => 'Updated title',
+            'slug' => 'updated-slug'
         ]);
     }
 
@@ -98,6 +104,51 @@ class ArticleFormTest extends TestCase
             ->call('save')
             ->assertHasErrors(['article.title' => 'required'])
             ->assertSeeHtml(__('validation.required', ['attribute' => 'title']))
+        ;
+    }
+
+    /** @test */
+    //otro test para validar si el slug es obligatorio
+    function slug_is_required()
+    {
+        Livewire::test('article-form')
+            ->set('article.title', 'New Article')
+            ->set('article.content', 'Article content')
+            ->call('save')
+            ->assertHasErrors(['article.slug' => 'required'])
+            ->assertSeeHtml(__('validation.required', ['attribute' => 'slug']))
+        ;
+    }
+
+     /** @test */
+    //otro test para validar si el slug es unico
+    function slug_must_be_unique()
+    {
+        //crear un articulo
+        $article = Article::factory()->create();
+        Livewire::test('article-form')
+            ->set('article.title', 'New Article')
+            ->set('article.slug', $article->slug)
+            ->set('article.content', 'Article content')
+            ->call('save')
+            ->assertHasErrors(['article.slug' => 'unique'])
+            ->assertSeeHtml(__('validation.unique', ['attribute' => 'slug']))
+        ;
+    }
+
+     /** @test */
+    //otro test para validar la regla de unique es ignorada cuando se actualiza un articulo
+    function unique_rule_should_be_ignored_when_updating_the_same_slug()
+    {
+        //crear un articulo
+        $article = Article::factory()->create();
+        Livewire::test('article-form', ['article' => $article])
+            ->set('article.title', 'New Article')
+            ->set('article.slug', $article->slug)
+            ->set('article.content', 'Article content')
+            ->call('save')
+            ->assertHasNoErrors(['article.slug' => 'unique'])
+            
         ;
     }
 

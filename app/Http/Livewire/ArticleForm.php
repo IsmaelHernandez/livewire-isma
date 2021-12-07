@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\Article;
+use Illuminate\Validation\Rule;
 
 //componente que nos dej crear y editar un articulo
 class ArticleForm extends Component
@@ -11,10 +12,17 @@ class ArticleForm extends Component
     public Article $article;
 
     //reglas de validacion
-    public $rules = [
-        'article.title' => ['required', 'min:4'],
-        'article.content' => ['required'],
-    ];
+    protected function rules()
+    {
+        return [
+            'article.title' => ['required', 'min:4'],
+            'article.slug' => [
+                'required', 
+                Rule::unique('articles', 'slug')->ignore($this->article)
+            ],
+            'article.content' => ['required'],
+        ];
+    }
 
     //inicializar la propiedad
     public function mount(Article $article)
