@@ -3,13 +3,15 @@
 namespace Tests\Feature\Livewire;
 
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
 use App\Models\User;
 use Livewire\Livewire;
 use App\Models\Article;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Auth\User as Authenticatable; 
-
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class ArticleFormTest extends TestCase
 {
@@ -54,7 +56,6 @@ class ArticleFormTest extends TestCase
             ->assertSeeHtml('wire:submit.prevent="save"')
             ->assertSeeHtml('wire:model="article.title"')
             ->assertSeeHtml('wire:model="article.slug"')
-            ->assertSeeHtml('wire:model="article.content"')
         ;
     }
 
@@ -66,10 +67,15 @@ class ArticleFormTest extends TestCase
     //test para validar si se creo un articulo
      function can_create_new_articles()
     {
+        //creamos un disco en memoria para los test para las images //disco publico vacio
+        Storage::fake('public');
+        //crear imagenes en memorian //imagen lista para seleccionar
+        $image = UploadedFile::fake()->image('post-image.png');
         //usuario para crear el articulo //al crear el articulo automaticamente se vincule al usuario
         $user = User::factory()->create();
         /** @var mixed $user */
         Livewire::actingAs($user)->test('article-form')
+            ->set('image', $image) //seteamos la propiedad image
             ->set('article.title', 'New article') //setear una propiedad
             ->set('article.slug', 'new-article')
             ->set('article.content', 'Article content')
@@ -80,11 +86,15 @@ class ArticleFormTest extends TestCase
         ;
         //verificar si en la base de datos se creo el articulo
         $this->assertDatabaseHas('articles',[
+            'image' => $imagePath = Storage::disk('public')->files()[0],
             'title' => 'New article',
             'slug' => 'new-article',
             'content' => 'Article content',
             'user_id' => $user->id
         ]);
+
+
+        Storage::disk('public')->assertExists($imagePath);
     }
 
     /**
@@ -122,6 +132,43 @@ class ArticleFormTest extends TestCase
             'slug' => 'updated-slug',
             'user_id' => $user->id,
         ]);
+    }
+
+     /**
+     * A basic feature test example.
+     *
+     * @test
+     */
+    //test para validar si se creo un articulo
+    function can_update_articles_image()
+    {
+        //creamos un disco en memoria para los test para las images //disco publico vacio
+        Storage::fake('public');
+        //crear imagenes en memorian //imagen lista para seleccionar
+        $oldImage = UploadedFile::fake()->image('old-image.png');
+        //direccion de la imagen que se almacena en el disco public
+        $oldImagenPath = $oldImage->store('/', 'public');
+        //nueva imagen
+        $newImage = UploadedFile::fake()->image('new-image.png');
+        //necesitamos un articulo en la BS
+        $article = Article::factory()->create([
+            'image' =>$oldImagenPath
+        ]);
+        //creamos el usuario
+        $user = User::factory()->create();
+        //inicializamos el componente
+        Livewire::actingAs($user)->test('article-form', ['article' => $article])  
+            ->set('image', $newImage)   
+            ->call('save')
+            ->assertSessionHas('status')
+            ->assertRedirect(route('articles.index'))
+        
+        ;
+
+
+        Storage::disk('public')
+            ->assertExists($article->fresh()->image)
+            ->assertMissing($oldImagenPath);
     }
 
     /** @test */

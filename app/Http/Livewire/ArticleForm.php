@@ -8,6 +8,7 @@ use Livewire\Component;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 //componente que nos dej crear y editar un articulo
 class ArticleForm extends Component
@@ -21,7 +22,7 @@ class ArticleForm extends Component
     protected function rules()
     {
         return [
-            'image' => ['image', 'max:2048'],
+            'image' => [],
             'article.title' => ['required', 'min:4'],
             'article.slug' => [
                 'required',
@@ -54,7 +55,16 @@ class ArticleForm extends Component
        //validar en tiempo real
        $this->validate();
 
-       $this->article->image = $this->image->store('/', 'public');
+       //verificar si imagen tiene un valor
+       if($this->image){
+           if($oldImage = $this->article->image){
+                Storage::disk('public')->delete($oldImage);
+           }
+
+           $newImage = $this->image->store('/', 'public');
+            
+            $this->article->image = $newImage;
+       }
 
        //hacer la relacion entre user y articulos
        Auth::user()->articles()->save($this->article);
