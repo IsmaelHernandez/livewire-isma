@@ -19,17 +19,18 @@
             <x-slot name="form">
                 <div class="col-span-6 sm:col-span-4">
                     <x-jet-label for="title" :value="__('Title')"/>
-                    <x-jet-input wire:model="article.title" id="title" class="mt-1 block w-full" type="text" />
+                    <x-jet-input wire:model="article.title" id="title" class="mt-1 block w-full" type="text" placeholder="Title" />
                     <x-jet-input-error for="article.title" class="mt-3" />
                 </div>
                 <div class="col-span-6 sm:col-span-4"">
                     <x-jet-label for="slug" :value="__('SLug')"/>
-                    <x-jet-input wire:model="article.slug" id="slug" class="mt-1 block w-full" type="text" />
+                    <x-jet-input wire:model="article.slug" id="slug" class="mt-1 block w-full" type="text" placeholder="Slug" />
                     <x-jet-input-error for="article.slug" class="mt-3" />
                 </div>
                 <div class="col-span-6 sm:col-span-4"">
                     <x-jet-label for="content" :value="__('Content')"/>
-                    <x-textarea wire:model="article.content" id="content" class="mt-1 block w-full" />
+                    <x-html-editor wire:model="article.content" id="content" class="mt-1 block w-full"></x-html-editor>
+                    {{-- <x-textarea wire:model="article.content" id="content" class="mt-1 block w-full" /> --}}
                     <x-jet-input-error for="article.content" class="mt-3" />
                 </div>
                 <x-slot name="actions">
