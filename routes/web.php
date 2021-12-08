@@ -33,4 +33,8 @@ Route::get('/blog/{article}/edit', ArticleForm::class)
     ->name('articles.edit')
     ->middleware('auth'); //ruta de ver articulo
 
-    Route::get('login')->name('login');
+// Route::get('login')->name('login');
+
+Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
+    return view('dashboard');
+})->name('dashboard');
