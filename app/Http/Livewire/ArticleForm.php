@@ -2,21 +2,26 @@
 
 namespace App\Http\Livewire;
 
-use Livewire\Component;
+use Livewire\WithFileUploads;
 use App\Models\Article;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
+use Livewire\Component;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 //componente que nos dej crear y editar un articulo
 class ArticleForm extends Component
 {
+    use WithFileUploads; //para trabajar con images
     public Article $article;
+
+    public $image;
 
     //reglas de validacion
     protected function rules()
     {
         return [
+            'image' => ['image', 'max:2048'],
             'article.title' => ['required', 'min:4'],
             'article.slug' => [
                 'required',
@@ -48,6 +53,8 @@ class ArticleForm extends Component
     {
        //validar en tiempo real
        $this->validate();
+
+       $this->article->image = $this->image->store('/', 'public');
 
        //hacer la relacion entre user y articulos
        Auth::user()->articles()->save($this->article);
