@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\Article;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 
@@ -48,8 +49,10 @@ class ArticleForm extends Component
        //validar en tiempo real
        $this->validate();
 
+       //hacer la relacion entre user y articulos
+       Auth::user()->articles()->save($this->article);
        //mandar a llamar a la propiedad y al metodo save
-       $this->article->save();
+    //    $this->article->save();
        //Mostrar msj de inserccion
        session()->flash('status',__('Articulo Guardado'));
 

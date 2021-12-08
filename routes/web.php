@@ -22,6 +22,15 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/', Articles::class)->name('articles.index');; //home
-Route::get('/create', ArticleForm::class)->name('articles.create'); //ruta de crear articulo
+
+Route::get('/create', ArticleForm::class)
+    ->name('articles.create')
+    ->middleware('auth'); //ruta de crear articulo
+
 Route::get('/blog/{article}', ArticleShow::class)->name('articles.show'); //ruta de ver articulo
-Route::get('/blog/{article}/edit', ArticleForm::class)->name('articles.edit'); //ruta de ver articulo
+
+Route::get('/blog/{article}/edit', ArticleForm::class)
+    ->name('articles.edit')
+    ->middleware('auth'); //ruta de ver articulo
+
+    Route::get('login')->name('login');

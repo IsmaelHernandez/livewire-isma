@@ -2,25 +2,46 @@
 
 namespace Tests\Feature\Livewire;
 
-use App\Models\Article;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Livewire\Livewire;
 use Tests\TestCase;
+use App\Models\User;
+use Livewire\Livewire;
+use App\Models\Article;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Auth\User as Authenticatable; 
+
 
 class ArticleFormTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase; //para que inicien con una bd basia
+
+    
+    //test que nos diga que si no esta logeado no puede editar y crear
+     /** @test */
+     function guests_cannot_create_or_update_articles()
+     {
+         $this->get(route('articles.create'))
+             ->assertRedirect('login');
+         
+         $article = Article::factory()->create();
+         $this->get(route('articles.edit', $article))
+             ->assertRedirect('login');
+     }
+
+     
 
     //crear un test que nos diga que el componente se muestra correctamente
      /** @test */
     function article_form_renders_properly()
     {
-        $this->get(route('articles.create'))
+        //crear un usuario
+        $user = User::factory()->create();
+        /** @var mixed $user */
+        $this->actingAs($user)->get(route('articles.create'))
             ->assertSeeLivewire('article-form');
         
         $article = Article::factory()->create();
-        $this->get(route('articles.edit', $article))
+        $this->actingAs($user)->get(route('articles.edit', $article))
             ->assertSeeLivewire('article-form');
     }
 
@@ -45,7 +66,10 @@ class ArticleFormTest extends TestCase
     //test para validar si se creo un articulo
      function can_create_new_articles()
     {
-        Livewire::test('article-form')
+        //usuario para crear el articulo //al crear el articulo automaticamente se vincule al usuario
+        $user = User::factory()->create();
+        /** @var mixed $user */
+        Livewire::actingAs($user)->test('article-form')
             ->set('article.title', 'New article') //setear una propiedad
             ->set('article.slug', 'new-article')
             ->set('article.content', 'Article content')
@@ -58,7 +82,8 @@ class ArticleFormTest extends TestCase
         $this->assertDatabaseHas('articles',[
             'title' => 'New article',
             'slug' => 'new-article',
-            'content' => 'Article content'
+            'content' => 'Article content',
+            'user_id' => $user->id
         ]);
     }
 
@@ -72,8 +97,11 @@ class ArticleFormTest extends TestCase
     {
         //necesitamos un articulo en la BS
         $article = Article::factory()->create();
+
+        //creamos el usuario
+        $user = User::factory()->create();
         //inicializamos el componente
-        Livewire::test('article-form', ['article' => $article])
+        Livewire::actingAs($user)->test('article-form', ['article' => $article])
             //metodo de livewire  para verificar que una propiedad ya esta setiada
             ->assertSet('article.title', $article->title) //para ver si una propiedad esta seteada
             ->assertSet('article.slug', $article->slug)
@@ -91,7 +119,8 @@ class ArticleFormTest extends TestCase
 
         $this->assertDatabaseHas('articles',[
             'title' => 'Updated title',
-            'slug' => 'updated-slug'
+            'slug' => 'updated-slug',
+            'user_id' => $user->id,
         ]);
     }
 
@@ -156,7 +185,11 @@ class ArticleFormTest extends TestCase
     {
         //crear un articulo
         $article = Article::factory()->create();
-        Livewire::test('article-form', ['article' => $article])
+
+        //creamos el usuario
+        $user = User::factory()->create();
+
+        Livewire::actingAs($user)->test('article-form', ['article' => $article])
             ->set('article.title', 'New Article')
             ->set('article.slug', $article->slug)
             ->set('article.content', 'Article content')
