@@ -22,14 +22,24 @@ class ArticleForm extends Component
     protected function rules()
     {
         return [
-            'image' => [],
-            'article.title' => ['required', 'min:4'],
+            'image' => [
+                //metodo obligatori si el valor que pasamos es verdadero
+                Rule::requiredIf(! $this->article->image), //querenmos que la agregue si no esta setiada la imagen del articulo 
+                Rule::when($this->image, ['image', 'max:2048']) //metodo when recibe un boolen verificamos si el usuario a seleccionbado una imagen 
+                // 'max:2048'
+            ],
+            'article.title' => [
+                'required', 
+                'min:4'
+            ],
             'article.slug' => [
                 'required',
                 'alpha_dash', //solo permitira letras-numeros-guiones
                 Rule::unique('articles', 'slug')->ignore($this->article)
             ],
-            'article.content' => ['required'],
+            'article.content' => [
+                'required'
+            ],
         ];
     }
 
