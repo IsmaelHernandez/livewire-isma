@@ -21,6 +21,13 @@
                     <x-jet-nav-link href="/articles-create" :active="request()->routeIs('articles.create')">
                         {{ __('Articles Create') }}
                     </x-jet-nav-link>
+                    <x-jet-nav-link href="/about" :active="request()->routeIs('about')">
+                        {{ __('About') }}
+                    </x-jet-nav-link>
+                    <x-jet-nav-link href="/contact" :active="request()->routeIs('contact')">
+                        {{ __('Contact Us') }}
+                    </x-jet-nav-link>
+                    
                 </div>
             </div>
 
@@ -152,6 +159,12 @@
             </x-jet-responsive-nav-link>
             <x-jet-responsive-nav-link href="/articles-create'" :active="request()->routeIs('articles.create')">
                 {{ __('Articles Create') }}
+            </x-jet-responsive-nav-link>
+            <x-jet-responsive-nav-link href="/about" :active="request()->routeIs('about')">
+                {{ __('About') }}
+            </x-jet-responsive-nav-link>
+            <x-jet-responsive-nav-link href="/contact" :active="request()->routeIs('contact')">
+                {{ __('Contact Us') }}
             </x-jet-responsive-nav-link>
             
         </div>
