@@ -14,7 +14,7 @@ class Articles extends Component
         return view('livewire.articles',[
             'articles' => Article::where('title', 'like', "%{$this->search}%"
             )->latest()->get() 
-        ])->layout('layouts.guest');
+        ])->layout('layouts.app');
     }
 }
 // metodo latest para ordenar de forma

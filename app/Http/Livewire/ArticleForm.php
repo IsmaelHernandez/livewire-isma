@@ -16,18 +16,18 @@ class ArticleForm extends Component
     use WithFileUploads; //para trabajar con images
     public Article $article;
 
-    public $image;
+    // public $image;
 
     //reglas de validacion
     protected function rules()
     {
         return [
-            'image' => [
-                //metodo obligatori si el valor que pasamos es verdadero
-                Rule::requiredIf(! $this->article->image), //querenmos que la agregue si no esta setiada la imagen del articulo 
-                Rule::when($this->image, ['image', 'max:2048']) //metodo when recibe un boolen verificamos si el usuario a seleccionbado una imagen 
-                // 'max:2048'
-            ],
+            // 'image' => [
+            //     //metodo obligatori si el valor que pasamos es verdadero
+            //     Rule::requiredIf(! $this->article->image), //querenmos que la agregue si no esta setiada la imagen del articulo 
+            //     Rule::when($this->image, ['image', 'max:2048']) //metodo when recibe un boolen verificamos si el usuario a seleccionbado una imagen 
+            //     // 'max:2048'
+            // ],
             'article.title' => [
                 'required', 
                 'min:4'
@@ -65,16 +65,16 @@ class ArticleForm extends Component
        //validar en tiempo real
        $this->validate();
 
-       //verificar si imagen tiene un valor
-       if($this->image){
-           if($oldImage = $this->article->image){
-                Storage::disk('public')->delete($oldImage);
-           }
+    //    //verificar si imagen tiene un valor
+    //    if($this->image){
+    //        if($oldImage = $this->article->image){
+    //             Storage::disk('public')->delete($oldImage);
+    //        }
 
-           $newImage = $this->image->store('/', 'public');
+    //        $newImage = $this->image->store('/', 'public');
             
-            $this->article->image = $newImage;
-       }
+    //         $this->article->image = $newImage;
+    //    }
 
        //hacer la relacion entre user y articulos
        Auth::user()->articles()->save($this->article);

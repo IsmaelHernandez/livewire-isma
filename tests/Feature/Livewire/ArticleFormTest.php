@@ -68,14 +68,14 @@ class ArticleFormTest extends TestCase
      function can_create_new_articles()
     {
         //creamos un disco en memoria para los test para las images //disco publico vacio
-        Storage::fake('public');
-        //crear imagenes en memorian //imagen lista para seleccionar
-        $image = UploadedFile::fake()->image('post-image.png');
+        // Storage::fake('public');
+        // //crear imagenes en memorian //imagen lista para seleccionar
+        // $image = UploadedFile::fake()->image('post-image.png');
         //usuario para crear el articulo //al crear el articulo automaticamente se vincule al usuario
         $user = User::factory()->create();
         /** @var mixed $user */
         Livewire::actingAs($user)->test('article-form')
-            ->set('image', $image) //seteamos la propiedad image
+            //->set('image', $image) //seteamos la propiedad image
             ->set('article.title', 'New article') //setear una propiedad
             ->set('article.slug', 'new-article')
             ->set('article.content', 'Article content')
@@ -86,7 +86,7 @@ class ArticleFormTest extends TestCase
         ;
         //verificar si en la base de datos se creo el articulo
         $this->assertDatabaseHas('articles',[
-            'image' => $imagePath = Storage::disk('public')->files()[0],
+            //'image' => $imagePath = Storage::disk('public')->files()[0],
             'title' => 'New article',
             'slug' => 'new-article',
             'content' => 'Article content',
@@ -94,7 +94,7 @@ class ArticleFormTest extends TestCase
         ]);
 
 
-        Storage::disk('public')->assertExists($imagePath);
+        //Storage::disk('public')->assertExists($imagePath);
     }
 
     /**
@@ -107,6 +107,7 @@ class ArticleFormTest extends TestCase
     {
         //necesitamos un articulo en la BS
         $article = Article::factory()->create();
+
         //creamos el usuario
         $user = User::factory()->create();
         //inicializamos el componente
@@ -139,36 +140,36 @@ class ArticleFormTest extends TestCase
      * @test
      */
     //test para validar si se creo un articulo
-    function can_update_articles_image()
-    {
-        //creamos un disco en memoria para los test para las images //disco publico vacio
-        Storage::fake('public');
-        //crear imagenes en memorian //imagen lista para seleccionar
-        $oldImage = UploadedFile::fake()->image('old-image.png');
-        //direccion de la imagen que se almacena en el disco public
-        $oldImagenPath = $oldImage->store('/', 'public');
-        //nueva imagen
-        $newImage = UploadedFile::fake()->image('new-image.png');
-        //necesitamos un articulo en la BS
-        $article = Article::factory()->create([
-            'image' =>$oldImagenPath
-        ]);
-        //creamos el usuario
-        $user = User::factory()->create();
-        //inicializamos el componente
-        Livewire::actingAs($user)->test('article-form', ['article' => $article])  
-            ->set('image', $newImage)   
-            ->call('save')
-            ->assertSessionHas('status')
-            ->assertRedirect(route('articles.index'))
+    // function can_update_articles_image()
+    // {
+    //     //creamos un disco en memoria para los test para las images //disco publico vacio
+    //     Storage::fake('public');
+    //     //crear imagenes en memorian //imagen lista para seleccionar
+    //     $oldImage = UploadedFile::fake()->image('old-image.png');
+    //     //direccion de la imagen que se almacena en el disco public
+    //     $oldImagenPath = $oldImage->store('/', 'public');
+    //     //nueva imagen
+    //     $newImage = UploadedFile::fake()->image('new-image.png');
+    //     //necesitamos un articulo en la BS
+    //     $article = Article::factory()->create([
+    //         'image' =>$oldImagenPath
+    //     ]);
+    //     //creamos el usuario
+    //     $user = User::factory()->create();
+    //     //inicializamos el componente
+    //     Livewire::actingAs($user)->test('article-form', ['article' => $article])  
+    //         ->set('image', $newImage)   
+    //         ->call('save')
+    //         ->assertSessionHas('status')
+    //         ->assertRedirect(route('articles.index'))
         
-        ;
+    //     ;
 
 
-        Storage::disk('public')
-            ->assertExists($article->fresh()->image)
-            ->assertMissing($oldImagenPath);
-    }
+    //     Storage::disk('public')
+    //         ->assertExists($article->fresh()->image)
+    //         ->assertMissing($oldImagenPath);
+    // }
 
     /** @test */
     //otro test para validar si el titulo es obligatorio
@@ -184,47 +185,47 @@ class ArticleFormTest extends TestCase
 
      /** @test */
     //otro test para validar si el titulo es obligatorio
-    function image_is_required()
-    {
-        Livewire::test('article-form')
-            ->set('article.title', 'Article title') //enviamos titulo pero no la imagen
-            ->set('article.content', 'Article content') //enviamos contenido pero no la imagen
-            ->call('save') //enviamos el formulario image
-            ->assertHasErrors(['image' => 'required']) //esperamos un error en el campo con la regla required
-            ->assertSeeHtml(__('validation.required', ['attribute' => 'image'])) //mensaje de validacion que utiliza el campo imagen
-        ;
-    }
+    // function image_is_required()
+    // {
+    //     Livewire::test('article-form')
+    //         ->set('article.title', 'Article title') //enviamos titulo pero no la imagen
+    //         ->set('article.content', 'Article content') //enviamos contenido pero no la imagen
+    //         ->call('save') //enviamos el formulario image
+    //         ->assertHasErrors(['image' => 'required']) //esperamos un error en el campo con la regla required
+    //         ->assertSeeHtml(__('validation.required', ['attribute' => 'image'])) //mensaje de validacion que utiliza el campo imagen
+    //     ;
+    // }
 
      /** @test */
     //otro test para validar que la imagen es jpg
-    function image_field_must_be_of_type_image()
-    {
-        Livewire::test('article-form')
-            ->set('image', 'string-not-allowed') //seteamos el campo imagen 
-            ->call('save') //enviamos el formulario image
-            ->assertHasErrors(['image' => 'image']) //esperamos el error de validacion image
-            ->assertSeeHtml(__('validation.image', ['attribute' => 'image'])) //mensaje de validacion que utiliza el campo imagen
-        ;
-    }
+    // function image_field_must_be_of_type_image()
+    // {
+    //     Livewire::test('article-form')
+    //         ->set('image', 'string-not-allowed') //seteamos el campo imagen 
+    //         ->call('save') //enviamos el formulario image
+    //         ->assertHasErrors(['image' => 'image']) //esperamos el error de validacion image
+    //         ->assertSeeHtml(__('validation.image', ['attribute' => 'image'])) //mensaje de validacion que utiliza el campo imagen
+    //     ;
+    // }
 
      /** @test */
     //otro test para validar que la imagen tiene un tamaño de 2mbt
-    function image_must_be_2mb_max()
-    {
-        //creamos un disco en memoria para los test para las images //disco publico vacio
-        Storage::fake('public');
-        //crear imagenes en memorian //imagen lista para seleccionar
-        $image = UploadedFile::fake()->image('post-image.png')->size(3000);
+    // function image_must_be_2mb_max()
+    // {
+    //     //creamos un disco en memoria para los test para las images //disco publico vacio
+    //     Storage::fake('public');
+    //     //crear imagenes en memorian //imagen lista para seleccionar
+    //     $image = UploadedFile::fake()->image('post-image.png')->size(3000);
 
-        Livewire::test('article-form')
-            ->set('image', $image) //seteamos el campo imagen que es la que selecciona el usuario
-            ->call('save') //enviamos el formulario image
-            ->assertHasErrors(['image' => 'max']) //esperamos el error de validacion image
-            ->assertSeeHtml(__('validation.max.file', [
-                'attribute' => 'image',
-                'max' => '2048',
-            ])); //mensaje de validacion que utiliza el campo imagen;
-    }
+    //     Livewire::test('article-form')
+    //         ->set('image', $image) //seteamos el campo imagen que es la que selecciona el usuario
+    //         ->call('save') //enviamos el formulario image
+    //         ->assertHasErrors(['image' => 'max']) //esperamos el error de validacion image
+    //         ->assertSeeHtml(__('validation.max.file', [
+    //             'attribute' => 'image',
+    //             'max' => '2048',
+    //         ])); //mensaje de validacion que utiliza el campo imagen;
+    // }
 
     /** @test */
     //otro test para validar si el slug es obligatorio
