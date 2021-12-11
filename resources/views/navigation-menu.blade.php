@@ -27,6 +27,12 @@
                     <x-jet-nav-link href="/contact" :active="request()->routeIs('contact')">
                         {{ __('Contact Us') }}
                     </x-jet-nav-link>
+                    <x-jet-nav-link href="/productos" :active="request()->routeIs('productos')">
+                        {{ __('Productos') }}
+                    </x-jet-nav-link>
+                    <x-jet-nav-link href="/showpost" :active="request()->routeIs('showpost')">
+                        {{ __('ShowPosts') }}
+                    </x-jet-nav-link> 
                     
                 </div>
             </div>
@@ -154,10 +160,10 @@
             <x-jet-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-jet-responsive-nav-link>
-            <x-jet-responsive-nav-link href="/articles'" :active="request()->routeIs('articles')">
+            <x-jet-responsive-nav-link href="/articles" :active="request()->routeIs('articles')">
                 {{ __('Articles') }}
             </x-jet-responsive-nav-link>
-            <x-jet-responsive-nav-link href="/articles-create'" :active="request()->routeIs('articles.create')">
+            <x-jet-responsive-nav-link href="/articles-create" :active="request()->routeIs('articles.create')">
                 {{ __('Articles Create') }}
             </x-jet-responsive-nav-link>
             <x-jet-responsive-nav-link href="/about" :active="request()->routeIs('about')">
@@ -166,6 +172,12 @@
             <x-jet-responsive-nav-link href="/contact" :active="request()->routeIs('contact')">
                 {{ __('Contact Us') }}
             </x-jet-responsive-nav-link>
+            <x-jet-responsive-nav-link href="/productos" :active="request()->routeIs('productos')">
+                {{ __('Productos') }}
+            </x-jet-responsive-nav-link>
+            <x-jet-responsive-nav-link href="/showpost" :active="request()->routeIs('showpost')">
+                {{ __('ShowPosts') }}
+            </x-jet-responsive-nav-link> 
             
         </div>
 

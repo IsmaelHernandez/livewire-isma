@@ -5,7 +5,10 @@ use App\Http\Livewire\Articles;
 use App\Http\Livewire\ArticleShow;
 use App\Http\Livewire\About;
 use App\Http\Livewire\Contact;
+use App\Http\Livewire\Productos;
+use App\Http\Livewire\ShowPosts;
 use Illuminate\Support\Facades\Route;
+
 
 
 // Route::get('/', function () {
@@ -41,3 +44,13 @@ Route::middleware(['auth:sanctum', 'verified'])
 Route::middleware(['auth:sanctum', 'verified'])
     ->get('/contact', Contact::class)
     ->name('contact');
+
+Route::middleware(['auth:sanctum', 'verified'])
+    ->get('/productos', Productos::class)
+    ->name('productos');
+
+Route::middleware(['auth:sanctum', 'verified'])
+    ->get('/showpost', ShowPosts::class)
+    ->name('showpost');
+
+

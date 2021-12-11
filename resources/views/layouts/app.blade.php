@@ -12,6 +12,8 @@
 
         <!-- Styles -->
         <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+        <link rel="stylesheet" href="{{ asset('vendor/fontawesome-free-6.0.0-beta3-web/css/all.min.css') }}">
+
 
         @livewireStyles
 
