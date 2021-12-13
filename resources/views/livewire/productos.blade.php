@@ -4,14 +4,10 @@
         <h1 class="font-semibold text-xl text-gray-800 leading-tight">
             {{__('Productos')}}
         </h1>
-    </x-slot>
+    </x-slot>   
 <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidder shadow-xl sm:rounded-lg px-4 py-4">
-            <div class="px-6 py-4">
-                {{-- <input type="text" wire:model="search"> --}}
-                <x-jet-input class="w-full" type="text" wire:model="search" placeholder="Buscar"/>
-            </div>
             <div class=" m-2 my-3">
                 @if(session()->has('message'))
                     {{-- preguntamos si tiene un valkor --}}

@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PostFactory extends Factory
 {
+    
     /**
      * Define the model's default state.
+     * 
      *
      * @return array
      */
@@ -15,7 +17,7 @@ class PostFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence(), //lo definimos como parrafo aleatorio
-            'content' => $this->faker->text() //lo definimos como parrafo aleatorio
+            'content' => $this->faker->text(), //lo definimos como parrafo aleatorio
         ];
     }
 }

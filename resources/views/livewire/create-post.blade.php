@@ -15,10 +15,12 @@
             <div class="mb-4">
                 <x-jet-label value="Title:" />
                 <x-jet-input type="text" wire:model="title" class="w-full" />
+                <x-jet-input-error for="title" class="mt-3" />
             </div>
             <div class="mb-4">
                 <x-jet-label value="Content:" />
                 <x-jet-input type="text" wire:model="content" class="w-full" />
+                <x-jet-input-error for="content" class="mt-3" />
             </div>
         </x-slot>
 
@@ -28,9 +30,11 @@
                 Cancelar
             </x-jet-secondary-button>
 
-            <x-jet-danger-button wire:click="save">
+            <x-jet-danger-button wire:click="save"  wire:loaging.attr="disabled" wire:target="save" class="disabled:opacity-25">
                 Crear Post
             </x-jet-danger-button>
+
+            
         </x-slot>
 
     </x-jet-dialog-modal>

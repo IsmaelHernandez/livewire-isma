@@ -7,6 +7,7 @@ use App\Http\Livewire\About;
 use App\Http\Livewire\Contact;
 use App\Http\Livewire\Productos;
 use App\Http\Livewire\ShowPosts;
+use App\Http\Livewire\Personaje;
 use Illuminate\Support\Facades\Route;
 
 
@@ -52,5 +53,6 @@ Route::middleware(['auth:sanctum', 'verified'])
 Route::middleware(['auth:sanctum', 'verified'])
     ->get('/showpost', ShowPosts::class)
     ->name('showpost');
+
 
 

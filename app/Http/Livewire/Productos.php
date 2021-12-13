@@ -12,6 +12,7 @@ class Productos extends Component
     public $productos, $descripcion, $cantidad, $id_prodcuto;
     //variable para el modal
     public $modal = false;
+    
 
     public function render()
     {
